@@ -43,6 +43,7 @@ var loadingParams = {
             parseJSON(serverParams.pc_constraints);
         newParams.turnRequestUrl = serverParams.turn_url;
         newParams.turnTransports = serverParams.turn_transports;
+        newParams.turnServerOverride = serverParams.turn_server_override;
         newParams.wssUrl = serverParams.wss_url;
         newParams.wssPostUrl = serverParams.wss_post_url;
         newParams.versionInfo = parseJSON(serverParams.version_info);
