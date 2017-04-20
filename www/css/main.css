@@ -104,6 +104,18 @@ footer > div.active {
   opacity: .8;
 }
 
+div#privacy {
+  bottom: 7px;
+  color: gray;
+  position: absolute;
+  right: 10px;
+}
+
+div#privacy a {
+  color: gray;
+  font-size: 14px;
+}
+
 html {
   height: 100%;
   margin: 0;
