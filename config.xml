@@ -28,11 +28,17 @@
         <allow-intent href="itms-apps:*" />
         <hook src="hooks/iosrtc-swift-support.js" type="after_platform_add" />
     </platform>
-    <plugin name="cordova-plugin-crosswalk-webview" spec="https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview" />
-    <plugin name="cordova-plugin-device" version="^1.0.1" />
     <plugin name="cordova-plugin-camera" spec="https://github.com/eface2face/cordova-plugin-camera" />
-    <plugin name="cordova-plugin-iosrtc" version="^2.0.1" />
     <engine name="ios" spec="~4.3.1" />
     <engine name="android" spec="~6.1.2" />
     <engine name="browser" spec="https://github.com/VinceOPS/cordova-browser.git" />
+    <plugin name="cordova-plugin-iosrtc" spec="~4.0.0" />
+    <plugin name="cordova-plugin-device" spec="~1.1.5" />
+    <plugin name="cordova-plugin-crosswalk-webview" spec="~2.3.0">
+        <variable name="XWALK_VERSION" value="23+" />
+        <variable name="XWALK_LITEVERSION" value="xwalk_core_library_canary:17+" />
+        <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect" />
+        <variable name="XWALK_MODE" value="embedded" />
+        <variable name="XWALK_MULTIPLEAPK" value="true" />
+    </plugin>
 </widget>
