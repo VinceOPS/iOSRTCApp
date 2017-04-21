@@ -6,7 +6,7 @@
  * buggy WebSocket context.
  *
  * The issue is described here:
- *   https://github.com/eface2face/cordova-plugin-iosrtc/issues/12
+ *   https://github.com/BasqueVoIPMafia/cordova-plugin-iosrtc/issues/12
  *
  * USAGE:
  *
@@ -17,35 +17,32 @@
 
 
 (function () {
+	// run on iOS Cordova only
+	if (!(window.cordova && window.cordova.platformId === 'ios')) {
+		return;
+	}
+
 	// Store a reference of the native WebSocket class.
 	var NativeWebSocket = window.WebSocket;
 
-
-	// Override native WebSocket.
+	// Override native WebSocket and also expose the native one.
 	window.WebSocket = FakeWebSocket;
+	window.NativeWebSocket = NativeWebSocket;
 
 
 	// Fake WebSocket class that ill override the native one.
 	function FakeWebSocket() {
-		var self = this,
+		var
+			self = this,
 			url = arguments[0],
 			protocols = arguments[1],
 			listeners = {};
 
 
-		// Create a native WebSocket instance.
-		if (protocols) {
-			this.ws = new NativeWebSocket(url, protocols);
-		} else {
-			this.ws = new NativeWebSocket(url);
-		}
-
-
 		// WebSocket is an EventTarget as per W3C spec.
 
 		this.addEventListener = function (type, newListener) {
-			var listenersType,
-				i, listener;
+			var listenersType, i, listener;
 
 			if (!type || !newListener) {
 				return;
@@ -66,8 +63,7 @@
 		};
 
 		this.removeEventListener = function (type, oldListener) {
-			var listenersType,
-				i, listener;
+			var listenersType, i, listener;
 
 			if (!type || !oldListener) {
 				return;
@@ -91,7 +87,8 @@
 		};
 
 		this.dispatchEvent = function (event) {
-			var self = this,
+			var
+				self = this,
 				type,
 				listenersType,
 				dummyListener,
@@ -131,32 +128,40 @@
 			}
 		};
 
+		setTimeout(function () {
+			// Create a native WebSocket instance.
+			if (protocols) {
+				self.ws = new NativeWebSocket(url, protocols);
+			} else {
+				self.ws = new NativeWebSocket(url);
+			}
 
-		// Set the native WebSocket events.
+			// Set the native WebSocket events.
 
-		this.ws.onopen = function (event) {
-			setTimeout(function () {
-				self.dispatchEvent(event);
-			});
-		};
+			self.ws.onopen = function (event) {
+				setTimeout(function () {
+					self.dispatchEvent(event);
+				});
+			};
 
-		this.ws.onerror = function (event) {
-			setTimeout(function () {
-				self.dispatchEvent(event);
-			});
-		};
+			self.ws.onerror = function (event) {
+				setTimeout(function () {
+					self.dispatchEvent(event);
+				});
+			};
 
-		this.ws.onclose = function (event) {
-			setTimeout(function () {
-				self.dispatchEvent(event);
-			});
-		};
+			self.ws.onclose = function (event) {
+				setTimeout(function () {
+					self.dispatchEvent(event);
+				});
+			};
 
-		this.ws.onmessage = function (event) {
-			setTimeout(function () {
-				self.dispatchEvent(event);
-			});
-		};
+			self.ws.onmessage = function (event) {
+				setTimeout(function () {
+					self.dispatchEvent(event);
+				});
+			};
+		});
 	}
 
 
@@ -165,55 +170,83 @@
 	Object.defineProperties(FakeWebSocket.prototype, {
 		url: {
 			get: function () {
-				return this.ws.url;
+				if (this.ws) {
+					return this.ws.url;
+				}
 			}
 		},
 		readyState: {
 			get: function () {
-				return this.ws.readyState;
+				if (this.ws) {
+					return this.ws.readyState;
+				}
 			}
 		},
 		protocol: {
 			get: function () {
-				return this.ws.protocol;
+				if (this.ws) {
+					return this.ws.protocol;
+				}
 			}
 		},
 		extensions: {
 			get: function () {
-				return this.ws.extensions;
+				if (this.ws) {
+					return this.ws.extensions;
+				}
 			}
 		},
 		bufferedAmount: {
 			get: function () {
-				return this.ws.bufferedAmount;
+				if (this.ws) {
+					return this.ws.bufferedAmount;
+				}
 			}
 		},
 		CONNECTING: {
 			get: function () {
-				return this.ws.CONNECTING;
+				if (this.ws) {
+					return this.ws.CONNECTING;
+				}
 			}
 		},
 		OPEN: {
 			get: function () {
-				return this.ws.OPEN;
+				if (this.ws) {
+					return this.ws.OPEN;
+				}
 			}
 		},
 		CLOSING: {
 			get: function () {
-				return this.ws.CLOSING;
+				if (this.ws) {
+					return this.ws.CLOSING;
+				}
 			}
 		},
 		CLOSED: {
 			get: function () {
-				return this.ws.CLOSED;
+				if (this.ws) {
+					return this.ws.CLOSED;
+				}
 			}
 		},
 		binaryType: {
 			get: function () {
-				return this.ws.binaryType;
+				if (this.ws) {
+					return this.ws.binaryType;
+				}
 			},
 			set: function (type) {
-				this.ws.binaryType = type;
+				var self = this;
+
+				if (this.ws) {
+					this.ws.binaryType = type;
+				} else {
+					setTimeout(function () {
+						self.ws.binaryType = type;
+					});
+				}
 			}
 		}
 	});
@@ -231,12 +264,16 @@
 	};
 
 	FakeWebSocket.prototype.close = function (code, reason) {
-		if (!code && !reason) {
-			this.ws.close();
-		} else if (code && !reason) {
-			this.ws.close(code);
-		} else {
-			this.ws.close(code, reason);
-		}
+		var self = this;
+
+		setTimeout(function () {
+			if (!code && !reason) {
+				self.ws.close();
+			} else if (code && !reason) {
+				self.ws.close(code);
+			} else {
+				self.ws.close(code, reason);
+			}
+		});
 	};
 })();
