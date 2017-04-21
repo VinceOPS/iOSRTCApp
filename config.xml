@@ -29,6 +29,9 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <config-file platform="ios" target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+            <string>This application uses your microphone for the purpose of video-calls.</string>
+        </config-file>
         <hook src="hooks/iosrtc-swift-support.js" type="after_platform_add" />
     </platform>
     <engine name="ios" spec="~4.3.1" />
