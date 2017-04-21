@@ -7,7 +7,7 @@
     <author email="inaki.baz@eface2face.com" href="https://eface2face.com">
         Iñaki Baz Castillo at eFace2Face, inc.
     </author>
-    <content src="appwindow.html" />
+    <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="EnableViewportScale" value="true" />
