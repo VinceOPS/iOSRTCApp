@@ -10,21 +10,16 @@
 <head>
 
   <meta charset="utf-8">
-  
   <meta name="description" content="WebRTC reference app">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
   <meta itemprop="description" content="Video chat using the reference WebRTC application">
   <meta itemprop="image" content="images/webrtc-icon-192x192.png">
   <meta itemprop="name" content="AppRTC">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta id="theme-color" name="theme-color" content="#ffffff">
+  <meta id="theme-color" name="theme-color" content="#1e1e1e">
 
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1,
-                                 minimum-scale=1, width=device-width">
-
-  <base target="_blank">
 
   <title>AppRTC</title>
 
@@ -53,7 +48,7 @@
     <div>
       <div id="room-id-input-div">
         <input type="text" id="room-id-input" autofocus/>
-        <label class="error-label hidden" for="room-id-input" id="room-id-input-label">Room name must be 5 or more characters and include only letters and numbers.</label>
+        <label class="error-label hidden" for="room-id-input" id="room-id-input-label">Room name must be 5 or more characters and include only letters, numbers, underscore and hyphen.</label>
       </div>
       <div id="room-id-input-buttons">
         <button id="join-button">JOIN</button>
@@ -130,10 +125,8 @@
 
   <script type="text/javascript">
     window.addEventListener("load", function () {
-      console.log("iOSRTCApp >>> DOM loaded");
-
       document.addEventListener("deviceready", function () {
-        console.log("iOSRTCApp >>> deviceready event");
+        window.updateVideos = function () {};
 
         // if iOS devices
         if (window.device.platform === "iOS") {
@@ -143,14 +136,10 @@
           cordova.plugins.iosrtc.registerGlobals();
 
           window.addEventListener("orientationchange", function () {
-            console.log("iOSRTCApp >>> orientationchange event");
-
             updateVideos();
           });
 
           window.updateVideos = function () {
-            console.debug("iOSRTCApp >>> update iosrtc videos");
-
             // NOTE: hack, but needed due to CSS transitions and so on.
             [0, 500, 1000, 1500].forEach(function (delay) {
               setTimeout(function () {
@@ -158,10 +147,6 @@
               }, delay);
             });
           };
-        }
-        // Non iOS devices.
-        else {
-          window.updateVideos = function () {};
         }
 
         // TODO: Wait a bit since we are adding more stuff into the DOM.
@@ -179,8 +164,8 @@
             document.getElementsByTagName("head")[0].appendChild(script);
           });
         }, 1000);
-      });  // End of ondeviceready.
-    });  // End of onload.
+      });
+    });
   </script>
 
 </body>

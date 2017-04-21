@@ -17,6 +17,7 @@
 var roomServer = 'https://apprtc.appspot.com';
 var loadingParams = {
   errorMessages: [],
+  warningMessages: [],
   suggestedRoomId: randomString(9),
   roomServer: roomServer,
   connect: false,
@@ -32,23 +33,18 @@ var loadingParams = {
         }
 
         // Convert from server format to expected format.
-        // TODO(tkchin): clean up response format. JSHint doesn't like it.
-        /* jshint ignore:start */
-        //jscs:disable requireCamelCaseOrUpperCaseIdentifiers
         newParams.isLoopback = serverParams.is_loopback === 'true';
         newParams.mediaConstraints = parseJSON(serverParams.media_constraints);
-        newParams.offerConstraints = parseJSON(serverParams.offer_constraints);
+        newParams.offerOptions = parseJSON(serverParams.offer_options);
         newParams.peerConnectionConfig = parseJSON(serverParams.pc_config);
         newParams.peerConnectionConstraints =
             parseJSON(serverParams.pc_constraints);
-        newParams.turnRequestUrl = serverParams.turn_url;
-        newParams.turnTransports = serverParams.turn_transports;
+        newParams.iceServerRequestUrl = serverParams.ice_server_url;
+        newParams.iceServerTransports = serverParams.ice_server_transports;
         newParams.turnServerOverride = serverParams.turn_server_override;
         newParams.wssUrl = serverParams.wss_url;
         newParams.wssPostUrl = serverParams.wss_post_url;
         newParams.versionInfo = parseJSON(serverParams.version_info);
-        //jscs:enable requireCamelCaseOrUpperCaseIdentifiers
-        /* jshint ignore:end */
         newParams.messages = serverParams.messages;
 
         trace('Initializing; parameters from server: ');
@@ -63,4 +59,29 @@ var loadingParams = {
   }
 };
 
-new AppController(loadingParams);
+
+var appController;
+
+function initialize() {
+    // We don't want to continue if this is triggered from Chrome prerendering,
+    // since it will register the user to GAE without cleaning it up, causing
+    // the real navigation to get a "full room" error. Instead we'll initialize
+    // once the visibility state changes to non-prerender.
+    if (document.visibilityState === 'prerender') {
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return;
+    }
+
+    appController = new AppController(loadingParams);
+}
+
+function onVisibilityChange() {
+    if (document.visibilityState === 'prerender') {
+        return;
+    }
+
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+    initialize();
+}
+
+initialize();
