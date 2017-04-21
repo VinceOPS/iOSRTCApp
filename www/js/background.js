@@ -13,15 +13,6 @@
 
 'use strict';
 (function() {
-  // chrome.app.runtime.onLaunched.addListener(function() {
-  //   chrome.app.window.create('appwindow.html', {
-  //     'width': 800,
-  //     'height': 600,
-  //     'left': 0,
-  //     'top': 0
-  //   });
-  // });
-
   // Send event notification from background to window.
   var sendWSEventMessageToWindow = function(port, wsEvent, data) {
     var message = {
