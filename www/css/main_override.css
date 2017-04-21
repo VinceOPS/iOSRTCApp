@@ -9,6 +9,14 @@
 	user-select: none;
 }
 
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+
 input, textarea {
 	/* disable copy/paste */
 	-webkit-user-select: auto !important;
