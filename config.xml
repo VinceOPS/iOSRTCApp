@@ -51,4 +51,5 @@
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value=" " />
     </plugin>
     <plugin name="cordova-custom-config" spec="~3.1.4" />
+    <plugin name="ionic-plugin-callkit" spec="https://github.com/Taracque/ionic-plugin-callkit.git" />
 </widget>
